@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Next.js: Debug Client (Turbopack)",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}",
+      "smartStep": true,
+      "sourceMapPathOverrides": {
+        "turbopack:///[project]/*": "${workspaceFolder}/*",
+        "turbopack:///*": "${workspaceFolder}/*",
+        "webpack:///./*": "${workspaceFolder}/*"
+      }
+    }
+  ]
+}
