@@ -12,7 +12,7 @@ export const useAppContext = () => {
 export const AppContextProvider = (props) => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const router = useRouter();
-
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [userData, setUserData] = useState(false);
   const [isSeller, setIsSeller] = useState(true);
@@ -90,6 +90,8 @@ export const AppContextProvider = (props) => {
     updateCartQuantity,
     getCartCount,
     getCartAmount,
+    isSideBarOpen,
+    setIsSideBarOpen,
   };
 
   return (

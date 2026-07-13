@@ -13,13 +13,16 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+    // <ClerkProvider>
     <html lang="en">
-      <body className={`${outfit.className} antialiased text-gray-700`}>
+      <body
+        className={`${outfit.className} suppressHydrationWarning antialiased text-gray-700`}
+      >
         <Toaster />
-        <ClerkProvider>
-          <AppContextProvider>{children}</AppContextProvider>
-        </ClerkProvider>
+
+        <AppContextProvider>{children}</AppContextProvider>
       </body>
     </html>
+    // </ClerkProvider>
   );
 }
