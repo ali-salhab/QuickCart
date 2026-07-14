@@ -1,5 +1,6 @@
 "use client";
 import { productsDummyData, userDummyData } from "@/assets/assets";
+import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 //  here we create the context
@@ -12,6 +13,7 @@ export const useAppContext = () => {
 export const AppContextProvider = (props) => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const router = useRouter();
+  const { user } = useUser();
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [userData, setUserData] = useState(false);
@@ -91,6 +93,7 @@ export const AppContextProvider = (props) => {
     getCartCount,
     getCartAmount,
     isSideBarOpen,
+    user,
     setIsSideBarOpen,
   };
 
