@@ -1,24 +1,23 @@
 import { Inngest } from "inngest";
-// لا تستورد الـ Model هنا، استورده داخل الدوال
 import connectDB from "./db";
 
 export const inngest = new Inngest({
   id: "QuickCart",
 });
 
-// دالة مساعدة للحصول على الـ Model داخل الـ handler
+// دالة مساعدة لجلب الموديل ديناميكياً (تجنب مشاكل البناء)
 const getUserModel = async () => {
   await connectDB();
   return (await import("@/models/user")).default;
 };
 
+// 1. إنشاء مستخدم
 export const syncUserCreation = inngest.createFunction(
-  { id: "Sync User Creation" },
-  { event: "clerk/user.created" },
+  { id: "sync-user-creation", event: "clerk/user.created" }, // تم دمج ID و Event هنا
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } =
       event.data;
-    const User = await getUserModel(); // استدعاء ديناميكي للـ Model
+    const User = await getUserModel();
 
     const newUser = new User({
       _id: id,
@@ -30,13 +29,13 @@ export const syncUserCreation = inngest.createFunction(
   },
 );
 
+// 2. تحديث مستخدم
 export const syncUserUpdate = inngest.createFunction(
-  { id: "Sync User Update" },
-  { event: "clerk/user.updated" },
+  { id: "sync-user-update", event: "clerk/user.updated" }, // تم دمج ID و Event هنا
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } =
       event.data;
-    const User = await getUserModel(); // استدعاء ديناميكي للـ Model
+    const User = await getUserModel();
 
     await User.findByIdAndUpdate(id, {
       name: `${first_name} ${last_name}`,
@@ -46,12 +45,12 @@ export const syncUserUpdate = inngest.createFunction(
   },
 );
 
+// 3. حذف مستخدم
 export const syncUserDeletion = inngest.createFunction(
-  { id: "Sync User Deletion" },
-  { event: "clerk/user.deleted" },
+  { id: "sync-user-deletion", event: "clerk/user.deleted" }, // تم دمج ID و Event هنا
   async ({ event }) => {
     const { id } = event.data;
-    const User = await getUserModel(); // استدعاء ديناميكي للـ Model
+    const User = await getUserModel();
 
     await User.findByIdAndDelete(id);
   },

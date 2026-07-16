@@ -1,17 +1,22 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-// استثناء مسار Inngest
-const isPublicRoute = createRouteMatcher(["/api/inngest(.*)"]);
+export default clerkMiddleware(async (auth, req) => {
+  // نقوم بحماية المسارات التي تحتاج توثيق فقط
+  // بدلاً من استخدام createRouteMatcher
+  const url = req.nextUrl.pathname;
 
-export default clerkMiddleware((auth, req) => {
-  if (isPublicRoute(req)) {
-    return; // السماح بالمرور دون فحص Clerk
+  // مثال: استثناء مسار inngest والصفحات العامة
+  if (url.startsWith("/api/inngest") || url === "/") {
+    return;
   }
+
+  // في الإصدارات الجديدة، يمكنك حماية أي مسار هنا
+  // await auth.protect();
 });
 
 export const config = {
   matcher: [
-    // استبعاد مسار Inngest من الميدل وير
+    // استبعاد الملفات الثابتة والـ Inngest
     "/((?!api/inngest|_next|.*\\..*).*)",
     "/(api|trpc)(.*)",
   ],
