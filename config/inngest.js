@@ -1,7 +1,12 @@
 import { Inngest } from "inngest";
 import User from "@/models/user";
 import connectDB from "./db";
+
+// here we are creating an instance of Inngest with the id "QuickCart"
+//  and exporting it for use in other parts of the application. We also define three functions to handle user creation,
+//  update, and deletion events from Clerk, which will interact with our database accordingly.
 export const inngest = new Inngest({
+  // this id is used to identify the Inngest instance and can be any string you choose. In this case, we are using "QuickCart" as the id.
   id: "QuickCart",
 });
 
