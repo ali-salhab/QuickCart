@@ -1,11 +1,18 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// كود بسيط يمنع أي عمليات إعادة توجيه تلقائية معقدة في البداية
-export default clerkMiddleware();
+// استثناء مسار Inngest
+const isPublicRoute = createRouteMatcher(["/api/inngest(.*)"]);
+
+export default clerkMiddleware((auth, req) => {
+  if (isPublicRoute(req)) {
+    return; // السماح بالمرور دون فحص Clerk
+  }
+});
 
 export const config = {
   matcher: [
-    // تشغيل الميدل وير فقط على صفحات الـ API وصفحات محددة، وتجاهل الصفحة الرئيسية تماماً حالياً للاختبار
+    // استبعاد مسار Inngest من الميدل وير
+    "/((?!api/inngest|_next|.*\\..*).*)",
     "/(api|trpc)(.*)",
   ],
 };
