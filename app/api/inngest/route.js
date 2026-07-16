@@ -3,9 +3,9 @@ import {
   syncUserCreation,
   syncUserDeletion,
   syncUserUpdate,
+  inngest,
 } from "@/config/inngest";
-import { inngest } from "@/config/inngest";
-export const { GET, POST } = serve({
+export const { GET, POST, PUT } = serve({
   client: inngest,
   functions: [syncUserCreation, syncUserUpdate, syncUserDeletion],
 });
