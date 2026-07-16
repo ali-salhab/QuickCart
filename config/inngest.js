@@ -1,22 +1,24 @@
 import { Inngest } from "inngest";
-import User from "@/models/user";
+// لا تستورد الـ Model هنا، استورده داخل الدوال
 import connectDB from "./db";
 
-// here we are creating an instance of Inngest with the id "QuickCart"
-//  and exporting it for use in other parts of the application. We also define three functions to handle user creation,
-//  update, and deletion events from Clerk, which will interact with our database accordingly.
 export const inngest = new Inngest({
-  // this id is used to identify the Inngest instance and can be any string you choose. In this case, we are using "QuickCart" as the id.
   id: "QuickCart",
 });
 
-// Inngest function to save users data to databse
+// دالة مساعدة للحصول على الـ Model داخل الـ handler
+const getUserModel = async () => {
+  await connectDB();
+  return (await import("@/models/user")).default;
+};
+
 export const syncUserCreation = inngest.createFunction(
   { id: "Sync User Creation" },
   { event: "clerk/user.created" },
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } =
       event.data;
+    const User = await getUserModel(); // استدعاء ديناميكي للـ Model
 
     const newUser = new User({
       _id: id,
@@ -24,18 +26,18 @@ export const syncUserCreation = inngest.createFunction(
       email: email_addresses[0].email_address,
       imageUrl: image_url,
     });
-    await connectDB();
     await newUser.save();
   },
 );
-// inngest function to update users data in the database
+
 export const syncUserUpdate = inngest.createFunction(
   { id: "Sync User Update" },
   { event: "clerk/user.updated" },
   async ({ event }) => {
     const { id, first_name, last_name, email_addresses, image_url } =
       event.data;
-    await connectDB();
+    const User = await getUserModel(); // استدعاء ديناميكي للـ Model
+
     await User.findByIdAndUpdate(id, {
       name: `${first_name} ${last_name}`,
       email: email_addresses[0].email_address,
@@ -44,13 +46,13 @@ export const syncUserUpdate = inngest.createFunction(
   },
 );
 
-// inngest function to delete users data from the database
 export const syncUserDeletion = inngest.createFunction(
   { id: "Sync User Deletion" },
   { event: "clerk/user.deleted" },
   async ({ event }) => {
     const { id } = event.data;
-    await connectDB();
+    const User = await getUserModel(); // استدعاء ديناميكي للـ Model
+
     await User.findByIdAndDelete(id);
   },
 );
