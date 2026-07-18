@@ -34,21 +34,19 @@ export const syncUserCreation = inngest.createFunction(
 
 // 2. تحديث مستخدم
 export const syncUserUpdate = inngest.createFunction(
-  { id: "sync-user-update", event: "clerk/user.updated" }, // تم دمج ID و Event هنا
+  { id: "sync-user-update" },
+  { event: "clerk/user.updated" },
   async ({ event }) => {
-    console.log("syncUserUpdate function --------------->");
-    const { id, first_name, last_name, email_addresses, image_url } =
-      event.data;
-    const User = await getUserModel();
-
-    await User.findByIdAndUpdate(id, {
-      name: `${first_name} ${last_name}`,
-      email: email_addresses[0].email_address,
-      imageUrl: image_url,
-    });
+    console.log("DEBUG: Function triggered by event:", event.name);
+    try {
+      await connectDB();
+      console.log("DEBUG: Database connected successfully");
+      // ... باقي الكود
+    } catch (error) {
+      console.error("DEBUG: Function failed:", error);
+    }
   },
 );
-
 // 3. حذف مستخدم
 export const syncUserDeletion = inngest.createFunction(
   { id: "sync-user-deletion", event: "clerk/user.deleted" }, // تم دمج ID و Event هنا
