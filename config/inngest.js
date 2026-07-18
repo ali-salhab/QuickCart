@@ -6,13 +6,26 @@ export const inngest = new Inngest({
   id: "quick-cart-production-v1",
 });
 export const syncUserCreationDebug = inngest.createFunction(
-  { id: "sync-user-creation-debug", event: "*" },
+  { id: "sync-user-creation-debug", triggers: { event: "*" } },
 
   async ({ event }) => {
     console.log("DEBUG: Caught event:", event.name);
     if (event.name === "clerk/user.created") {
       await connectDB();
     }
+  },
+);
+
+export const processTask = inngest.createFunction(
+  { id: "process-task", triggers: { event: "app/task.created" } },
+  async ({ event, step }) => {
+    const result = await step.run("handle-task", async () => {
+      return { processed: true, id: event.data.id };
+    });
+
+    await step.sleep("pause", "1s");
+
+    return { message: `Task ${event.data.id} complete`, result };
   },
 );
 const getUserModel = async () => {
@@ -23,7 +36,7 @@ const getUserModel = async () => {
 };
 
 export const syncUserCreation = inngest.createFunction(
-  { id: "sync-user-creation", event: "clerk/user.created" },
+  { id: "sync-user-creation", triggers: { event: "app/task.created" } },
   async ({ event }) => {
     console.log("syncUserCreation function --------------->");
 
@@ -43,7 +56,7 @@ export const syncUserCreation = inngest.createFunction(
 
 // 2. تحديث مستخدم
 export const syncUserUpdate = inngest.createFunction(
-  { id: "sync-user-update", event: "user.updated" }, // تم دمج ID و Event هنا
+  { id: "sync-user-update", triggers: { event: "clerk/user.updated" } }, // تم دمج ID و Event هنا
   async ({ event }) => {
     console.log("syncUserUpdate function --------------->");
     const { id, first_name, last_name, email_addresses, image_url } =
@@ -62,7 +75,7 @@ export const syncUserUpdate = inngest.createFunction(
 
 // 3. حذف مستخدم
 export const syncUserDeletion = inngest.createFunction(
-  { id: "sync-user-deletion", event: "clerk/user.deleted" }, // تم دمج ID و Event هنا
+  { id: "sync-user-deletion", triggers: { event: "clerk/user.deleted" } }, // تم دمج ID و Event هنا
   async ({ event }) => {
     console.log("syncUserDeletion function --------------->");
     const { id } = event.data;

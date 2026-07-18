@@ -5,6 +5,7 @@ import {
   syncUserUpdate,
   syncUserDeletion,
   syncUserCreationDebug,
+  processTask,
 } from "@/config/inngest";
 export const dynamic = "force-dynamic";
 console.log("route file --------------->");
@@ -15,5 +16,6 @@ export const { GET, POST, PUT } = serve({
     syncUserUpdate,
     syncUserDeletion,
     syncUserCreationDebug,
+    processTask,
   ],
 });
