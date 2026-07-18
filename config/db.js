@@ -18,13 +18,8 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    const opts = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    };
-
     cached.promise = mongoose
-      .connect(process.env.MONGO_URI, opts)
+      .connect(process.env.MONGO_URI)
       .then((mongoose) => {
         return mongoose;
       });
