@@ -12,11 +12,12 @@ const getUserModel = async () => {
 };
 
 // 1. إنشاء مستخدم
+// 1. تصحيح اسم الحدث لـ user.created
 export const syncUserCreation = inngest.createFunction(
-  { id: "sync-user-creation", event: "clerk/user.created" }, // تم دمج ID و Event هنا
+  { id: "sync-user-creation", event: "clerk/user.created" }, // تم التعديل هنا
   async ({ event }) => {
-    const { id, first_name, last_name, email_addresses, image_url } =
-      event.data;
+    const { data } = event; // ملاحظة: غالباً بيانات Clerk تكون داخل data
+    const { id, first_name, last_name, email_addresses, image_url } = data;
     const User = await getUserModel();
 
     const newUser = new User({
