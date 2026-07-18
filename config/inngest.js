@@ -43,7 +43,7 @@ export const syncUserCreation = inngest.createFunction(
 
 // 2. تحديث مستخدم
 export const syncUserUpdate = inngest.createFunction(
-  { id: "sync-user-update", event: "*" }, // تم دمج ID و Event هنا
+  { id: "sync-user-update", event: "user.updated" }, // تم دمج ID و Event هنا
   async ({ event }) => {
     console.log("syncUserUpdate function --------------->");
     const { id, first_name, last_name, email_addresses, image_url } =
