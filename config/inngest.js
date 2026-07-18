@@ -1,22 +1,24 @@
 import { Inngest } from "inngest";
 import connectDB from "./db";
+console.log("inngest config file --------------->");
 
 export const inngest = new Inngest({
-  id: "QuickCart",
+  id: "quick-cart-production-v1",
 });
 
-// دالة مساعدة لجلب الموديل ديناميكياً (تجنب مشاكل البناء)
 const getUserModel = async () => {
+  console.log("route file --------------->");
+
   await connectDB();
   return (await import("@/models/user")).default;
 };
 
-// 1. إنشاء مستخدم
-// 1. تصحيح اسم الحدث لـ user.created
 export const syncUserCreation = inngest.createFunction(
-  { id: "sync-user-creation", event: "clerk/user.created" }, // تم التعديل هنا
+  { id: "sync-user-creation", event: "clerk/user.created" },
   async ({ event }) => {
-    const { data } = event; // ملاحظة: غالباً بيانات Clerk تكون داخل data
+    console.log("syncUserCreation function --------------->");
+
+    const { data } = event;
     const { id, first_name, last_name, email_addresses, image_url } = data;
     const User = await getUserModel();
 
@@ -34,6 +36,7 @@ export const syncUserCreation = inngest.createFunction(
 export const syncUserUpdate = inngest.createFunction(
   { id: "sync-user-update", event: "clerk/user.updated" }, // تم دمج ID و Event هنا
   async ({ event }) => {
+    console.log("syncUserUpdate function --------------->");
     const { id, first_name, last_name, email_addresses, image_url } =
       event.data;
     const User = await getUserModel();
@@ -50,6 +53,7 @@ export const syncUserUpdate = inngest.createFunction(
 export const syncUserDeletion = inngest.createFunction(
   { id: "sync-user-deletion", event: "clerk/user.deleted" }, // تم دمج ID و Event هنا
   async ({ event }) => {
+    console.log("syncUserDeletion function --------------->");
     const { id } = event.data;
     const User = await getUserModel();
 
