@@ -16,18 +16,6 @@ export const syncUserCreationDebug = inngest.createFunction(
   },
 );
 
-export const processTask = inngest.createFunction(
-  { id: "process-task", triggers: { event: "app/task.created" } },
-  async ({ event, step }) => {
-    const result = await step.run("handle-task", async () => {
-      return { processed: true, id: event.data.id };
-    });
-
-    await step.sleep("pause", "1s");
-
-    return { message: `Task ${event.data.id} complete`, result };
-  },
-);
 const getUserModel = async () => {
   console.log("route file get user model function  --------------->");
 
@@ -36,7 +24,7 @@ const getUserModel = async () => {
 };
 
 export const syncUserCreation = inngest.createFunction(
-  { id: "sync-user-creation", triggers: { event: "app/task.created" } },
+  { id: "sync-user-creation", triggers: { event: "clerk/user.created" } },
   async ({ event }) => {
     console.log("syncUserCreation function --------------->");
 
