@@ -5,16 +5,6 @@ console.log("inngest config file --------------->");
 export const inngest = new Inngest({
   id: "quick-cart-production-v1",
 });
-export const syncUserCreationDebug = inngest.createFunction(
-  { id: "sync-user-creation-debug", triggers: { event: "*" } },
-
-  async ({ event }) => {
-    console.log("DEBUG: Caught event:", event.name);
-    if (event.name === "clerk/user.created") {
-      await connectDB();
-    }
-  },
-);
 
 const getUserModel = async () => {
   console.log("route file get user model function  --------------->");
