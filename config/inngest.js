@@ -6,8 +6,8 @@ export const inngest = new Inngest({
   id: "quick-cart-production-v1",
 });
 export const syncUserCreationDebug = inngest.createFunction(
-  { id: "sync-user-creation-debug" },
-  { event: "*" }, // استقبل كل شيء
+  { id: "sync-user-creation-debug", event: "*" },
+
   async ({ event }) => {
     console.log("DEBUG: Caught event:", event.name);
     if (event.name === "clerk/user.created") {
