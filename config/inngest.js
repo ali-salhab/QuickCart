@@ -31,18 +31,10 @@ export const syncUserCreation = inngest.createFunction(
     await newUser.save();
   },
 );
-export const catchAllEvents = inngest.createFunction(
-  { id: "catch-all-events" },
-  { event: "*" }, // النجمة تعني "أي حدث"
-  async ({ event }) => {
-    console.log("DEBUG: Catch-all triggered! Event name received:", event.name);
-    console.log("DEBUG: Full event data:", JSON.stringify(event, null, 2));
-  },
-);
 
 // 2. تحديث مستخدم
 export const syncUserUpdate = inngest.createFunction(
-  { id: "sync-user-update", event: "clerk/user.updated" }, // تم دمج ID و Event هنا
+  { id: "sync-user-update", event: "*" }, // تم دمج ID و Event هنا
   async ({ event }) => {
     console.log("syncUserUpdate function --------------->");
     const { id, first_name, last_name, email_addresses, image_url } =
