@@ -13,14 +13,14 @@ cloudinary.config({
 });
 
 export async function POST(req) {
-  console.log("POST request received at /api/products/add");
-  // console.log("Request headers:", req.headers);
+  // //console.log("POST request received at /api/products/add");
+  //console.log("Request headers:", req.headers);
 
   try {
     const { userId } = getAuth(req);
-    console.log("User ID from getAuth:", userId);
+    // //console.log("User ID from getAuth:", userId);
     const isSeller = await authSeller(userId);
-    console.log("User ID:", userId);
+    // //console.log("User ID:", userId);
     if (isSeller === false) {
       return NextResponse.json({
         success: false,
@@ -41,12 +41,12 @@ export async function POST(req) {
         message: "Please upload at least one image",
       });
     } else {
-      console.log("Images received:", images);
+      // //console.log("Images received:", images);
     }
     // upload image to cloudinary
     const uploadedImages = await Promise.all(
       images.map(async (image) => {
-        console.log("Uploading image:", image);
+        // //console.log("Uploading image:", image);
         const file = await image.arrayBuffer();
         const buffer = Buffer.from(file);
         return new Promise((resolve, reject) => {

@@ -29,25 +29,25 @@ export const AppContextProvider = (props) => {
   };
 
   const fetchUserData = async () => {
-    console.log("fetching user data");
+    //console.log("fetching user data");
     try {
       const token = await getToken();
-      console.log("token:", token);
+      //console.log("token:", token);
       const { data } = await axios.get("/api/user/data", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("user data:", data);
+      //console.log("user data:", data);
       if (data.success) {
-        console.log(data);
+        //console.log(data);
         setUserData(data.user);
         setCartItems(data.data.cartItems);
       } else {
         toast.error(data.message);
       }
       if (user.publicMetadata?.role === "seller") {
-        console.log("we set seller true", user.publicMetadata);
+        //console.log("we set seller true", user.publicMetadata);
         setIsSeller(true);
       } else {
         setIsSeller(false);

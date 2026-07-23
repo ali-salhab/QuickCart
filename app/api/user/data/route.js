@@ -6,12 +6,12 @@ import { NextResponse } from "next/server";
 export async function GET(request) {
   try {
     const { userId } = getAuth(request);
-    console.log(userId);
+    //console.log(userId);
 
     await connectDB();
 
     const user = await User.find({});
-    console.log(user);
+    //console.log(user);
     if (!user) {
       return NextResponse.json({
         message: "User not found",

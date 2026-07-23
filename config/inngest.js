@@ -1,13 +1,13 @@
 import { Inngest } from "inngest";
 import connectDB from "./db";
-console.log("inngest config file --------------->");
+//console.log("inngest config file --------------->");
 
 export const inngest = new Inngest({
   id: "quick-cart-production-v1",
 });
 
 const getUserModel = async () => {
-  console.log("route file get user model function  --------------->");
+  //console.log("route file get user model function  --------------->");
 
   await connectDB();
   return (await import("@/models/user")).default;
@@ -16,7 +16,7 @@ const getUserModel = async () => {
 export const syncUserCreation = inngest.createFunction(
   { id: "sync-user-creation", triggers: { event: "clerk/user.created" } },
   async ({ event }) => {
-    console.log("syncUserCreation function --------------->");
+    //console.log("syncUserCreation function --------------->");
 
     const { data } = event;
     const { id, first_name, last_name, email_addresses, image_url } = data;
@@ -35,11 +35,11 @@ export const syncUserCreation = inngest.createFunction(
 export const syncUserUpdate = inngest.createFunction(
   { id: "sync-user-update", triggers: { event: "clerk/user.updated" } }, // تم دمج ID و Event هنا
   async ({ event }) => {
-    console.log("syncUserUpdate function --------------->");
+    //console.log("syncUserUpdate function --------------->");
     const { id, first_name, last_name, email_addresses, image_url } =
       event.data;
 
-    console.log(event);
+    //console.log(event);
     const User = await getUserModel();
 
     await User.findByIdAndUpdate(id, {
@@ -53,7 +53,7 @@ export const syncUserUpdate = inngest.createFunction(
 export const syncUserDeletion = inngest.createFunction(
   { id: "sync-user-deletion", triggers: { event: "clerk/user.deleted" } }, // تم دمج ID و Event هنا
   async ({ event }) => {
-    console.log("syncUserDeletion function --------------->");
+    //console.log("syncUserDeletion function --------------->");
     const { id } = event.data;
     const User = await getUserModel();
 

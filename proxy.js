@@ -1,5 +1,5 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
-console.log("middle ware file ");
+//console.log("middle ware file ");
 export default clerkMiddleware(async (auth, req) => {
   // نقوم بحماية المسارات التي تحتاج توثيق فقط
   // بدلاً من استخدام createRouteMatcher
@@ -7,7 +7,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   // مثال: استثناء مسار inngest والصفحات العامة
   if (url.startsWith("/api/inngest") || url === "/") {
-    console.log("Excluding path from auth protection:", url);
+    //console.log("Excluding path from auth protection:", url);
     return;
   }
 
