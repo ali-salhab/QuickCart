@@ -10,6 +10,8 @@ const Navbar = () => {
   const { openSignIn } = useClerk();
   const { isSeller, router, user } = useAppContext();
 
+  console.log(isSeller);
+
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-32 py-3 border-b border-gray-300 ">
       <div className="flex items-center gap-4 lg:gap-8">
@@ -39,9 +41,9 @@ const Navbar = () => {
         {isSeller && (
           <button
             onClick={() => router.push("/seller")}
-            className="text-xs border px-4 py-1.5 rounded-md"
+            className="text-xs border px-4 py-1.5 rounded-md ring-2 ring-gray-500/20 hover:ring-gray-500/40 transition"
           >
-            Seller Dashboarderew
+            Seller Dashboard
           </button>
         )}
       </div>
@@ -79,7 +81,14 @@ const Navbar = () => {
       </ul>
 
       <div className="flex items-center  md:hidden gap-1">
-        {isSeller && <button>seller Dashboard</button>}
+        {isSeller && (
+          <button
+            onClick={() => router.push("/seller")}
+            className="text-xs border mx-2 px-4 py-1.5 rounded-md ring-2 ring-gray-500/20 hover:ring-gray-500/40 transition"
+          >
+            Seller Dashboard
+          </button>
+        )}
         {user ? (
           <>
             <UserButton>

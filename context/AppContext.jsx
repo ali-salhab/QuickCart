@@ -1,8 +1,10 @@
 "use client";
 import { productsDummyData, userDummyData } from "@/assets/assets";
-import { useUser } from "@clerk/nextjs";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
 //  here we create the context
 export const AppContext = createContext();
 // this we use it in any component to get the context value
@@ -13,11 +15,13 @@ export const useAppContext = () => {
 export const AppContextProvider = (props) => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY;
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+  const { getToken } = useAuth();
+
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const [products, setProducts] = useState([]);
   const [userData, setUserData] = useState(false);
-  const [isSeller, setIsSeller] = useState(true);
+  const [isSeller, setIsSeller] = useState(false);
   const [cartItems, setCartItems] = useState({});
   //  we use
   const fetchProductData = async () => {
@@ -25,7 +29,32 @@ export const AppContextProvider = (props) => {
   };
 
   const fetchUserData = async () => {
-    setUserData(userDummyData);
+    console.log("fetching user data");
+    try {
+      const token = await getToken();
+      console.log("token:", token);
+      const { data } = await axios.get("/api/user/data", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("user data:", data);
+      if (data.success) {
+        console.log(data);
+        setUserData(data.user);
+        setCartItems(data.data.cartItems);
+      } else {
+        toast.error(data.message);
+      }
+      if (user.publicMetadata?.role === "seller") {
+        console.log("we set seller true", user.publicMetadata);
+        setIsSeller(true);
+      } else {
+        setIsSeller(false);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   const addToCart = async (itemId) => {
@@ -75,7 +104,7 @@ export const AppContextProvider = (props) => {
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, [isLoaded]);
 
   const value = {
     currency,
@@ -91,6 +120,7 @@ export const AppContextProvider = (props) => {
     addToCart,
     updateCartQuantity,
     getCartCount,
+    getToken,
     getCartAmount,
     isSideBarOpen,
     user,

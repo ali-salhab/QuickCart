@@ -32,7 +32,6 @@ export const syncUserCreation = inngest.createFunction(
   },
 );
 
-// 2. تحديث مستخدم
 export const syncUserUpdate = inngest.createFunction(
   { id: "sync-user-update", triggers: { event: "clerk/user.updated" } }, // تم دمج ID و Event هنا
   async ({ event }) => {
@@ -51,7 +50,6 @@ export const syncUserUpdate = inngest.createFunction(
   },
 );
 
-// 3. حذف مستخدم
 export const syncUserDeletion = inngest.createFunction(
   { id: "sync-user-deletion", triggers: { event: "clerk/user.deleted" } }, // تم دمج ID و Event هنا
   async ({ event }) => {

@@ -12,6 +12,7 @@ if (!cached) {
 //
 async function connectDB() {
   console.log("Connecting to MongoDB...,,,,,,,");
+  console.log("MY MONGODB URI IS:", process.env.MONGODB_URI);
   console.log(cached);
   if (cached.conn) {
     return cached.conn;
@@ -19,7 +20,7 @@ async function connectDB() {
 
   if (!cached.promise) {
     cached.promise = mongoose
-      .connect(process.env.MONGO_URI)
+      .connect(process.env.MONGODB_URI)
       .then((mongoose) => {
         return mongoose;
       });
