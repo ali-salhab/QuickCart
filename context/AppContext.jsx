@@ -25,7 +25,16 @@ export const AppContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   //  we use
   const fetchProductData = async () => {
-    setProducts(productsDummyData);
+    try {
+      const { data } = await axios.get("/api/products/list");
+      if (data.success) {
+        setProducts(data.products);
+      } else {
+        toast.error(data.message || "Failed to fetch products");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to fetch products");
+    }
   };
 
   const fetchUserData = async () => {
@@ -42,7 +51,7 @@ export const AppContextProvider = (props) => {
       if (data.success) {
         //console.log(data);
         setUserData(data.user);
-        setCartItems(data.data.cartItems);
+        setCartItems(data.data.cartItems || {});
       } else {
         toast.error(data.message);
       }
@@ -58,12 +67,14 @@ export const AppContextProvider = (props) => {
   };
 
   const addToCart = async (itemId) => {
+    console.log(itemId, "-----------");
     let cartData = structuredClone(cartItems);
     if (cartData[itemId]) {
       cartData[itemId] += 1;
     } else {
       cartData[itemId] = 1;
     }
+    toast.success("Item added to cart");
     setCartItems(cartData);
   };
 

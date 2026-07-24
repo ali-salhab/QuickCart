@@ -6,26 +6,37 @@ import { useAppContext } from "@/context/AppContext";
 import Footer from "@/components/seller/Footer";
 import Loading from "@/components/Loading";
 import axios from "axios";
+import toast from "react-hot-toast";
 const ProductList = () => {
-  const { router } = useAppContext();
+  const { router, getToken, user } = useAppContext();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchSellerProduct = async () => {
-    console.log(
-      "here we are fetch produts from the function 0000-------------.",
-    );
-    const response = await axios.get("/api/products/seller-list");
-    console.log("Seller products response:");
-    console.log(response.data.products);
-    setProducts(response.data.products);
-    setLoading(false);
+    try {
+      const response = await axios.get("/api/products/seller-list", {
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      });
+      if (response.data.success === true) {
+        setProducts(response.data.products);
+        setLoading(false);
+      } else {
+        toast.error(response.data.message || "Failed to fetch products");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to fetch products");
+    }
   };
 
   useEffect(() => {
-    fetchSellerProduct();
-  }, []);
+    if (user) {
+      fetchSellerProduct();
+    }
+    // fetchSellerProduct();
+  }, [user]);
 
   return (
     <div className="flex-1 min-h-screen flex flex-col justify-between">
